@@ -1,4 +1,3 @@
-
 let startButton = document.querySelector(".start-button button");
 let infoBox = document.querySelector(".info-box");
 let exitButton = infoBox.querySelector(".buttons .quit");
@@ -6,6 +5,15 @@ let continueButton = infoBox.querySelector(".buttons .restart");
 let quizBox = document.querySelector(".quiz-box");
 let resultBox = document.querySelector(".result-box");
 let optionList = document.querySelector(".option-list");
+let restartQuiz = resultBox.querySelector(".buttons .restart");
+let quitQuiz = resultBox.querySelector(".buttons .quit");
+let nextButton = document.querySelector("footer .next-button");
+let bottomQuestionCounter = document.querySelector("footer .total-questions")
+let questionCount = 0;
+let questionNumber = 1;
+let userScore = 0;
+let tickIconTag = '<div class="icon tick"><i class="fas fa-check"></i></div>';
+let crossIconTag = '<div class="icon cross"><i class="fas fa-times"></i></div>';
 
 
 let questions = [
@@ -64,20 +72,6 @@ let questions = [
       "eXamine Multiple Language"
     ]
   },
-  // you can uncomment the below codes and make duplicate as more as you want to add question
-  // but remember you need to give the numb value serialize like 1,2,3,5,6,7,8,9.....
-
-  //   {
-  //   numb: 6,
-  //   question: "Your Question is Here",
-  //   answer: "Correct answer of the question is here",
-  //   options: [
-  //     "Option 1",
-  //     "option 2",
-  //     "option 3",
-  //     "option 4"
-  //   ]
-  // },
 ];
 
 startButton.onclick = ()=>{
@@ -94,20 +88,14 @@ continueButton.onclick = ()=>{
     showQuestions(0);
     questionCounter(1);
 }
-let questionCount = 0;
-let questionNumber = 1;
-let userScore = 0;
-
-let restartQuiz = resultBox.querySelector(".buttons .restart");
-let quitQuiz = resultBox.querySelector(".buttons .quit");
 
 restartQuiz.onclick = ()=>{
     debugger
     quizBox.classList.add("activeQuiz");
     resultBox.classList.remove("activeResult");
-    let questionCount = 0;
-    let questionNumber = 1;
-    let userScore = 0;
+    questionCount = 0;
+    questionNumber = 1;
+    userScore = 0;
     showQuestions(questionCount);
     questionCounter(questionNumber);
     nextButton.classList.remove("show");
@@ -116,9 +104,6 @@ restartQuiz.onclick = ()=>{
 quitQuiz.onclick = ()=>{    
     window.location.reload();
 }
-
-let nextButton = document.querySelector("footer .next-button");
-let bottomQuestionCounter = document.querySelector("footer .total-questions")
 
 nextButton.onclick = () =>{
     debugger
@@ -136,22 +121,18 @@ nextButton.onclick = () =>{
 
 function showQuestions(index) {
     let questionText = document.querySelector(".question-text");
-
     let questionTag = '<span>' + questions[index].number +  "." + questions[index].question + '</span>';
     let optionTag = '<div class="option" onclick="optionSelected(this)"> <span>' + questions[index].options[0] + '</span></div>' + '<div class="option" onclick="optionSelected(this)"> <span>' + questions[index].options[1] + '</span></div>' + '<div class="option" onclick="optionSelected(this)"> <span>' + questions[index].options[2] + '</span></div>' + '<div class="option" onclick="optionSelected(this)"> <span>' + questions[index].options[3] + '</span></div>';
     questionText.innerHTML = questionTag;
     optionList.innerHTML = optionTag;
 }
 
-let tickIconTag = '<div class="icon tick"><i class="fas fa-check"></i></div>';
-let crossIconTag = '<div class="icon cross"><i class="fas fa-times"></i></div>';
-
 function optionSelected(answer){
     let userAns = answer.textContent;
     let correcAns = questions[questionCount].answer;
     let allOptions = optionList.children.length;
 
-    if(userAns == correcAns){
+    if(userAns === correcAns){
         userScore += 1;
         answer.classList.add("correct")
         answer.insertAdjacentHTML("beforeend", tickIconTag);
