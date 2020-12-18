@@ -15,71 +15,89 @@ let userScore = 0;
 let tickIconTag = '<div class="icon tick"><i class="fas fa-check"></i></div>';
 let crossIconTag = '<div class="icon cross"><i class="fas fa-times"></i></div>';
 
+let startAudio = new Audio('./audiofiles/Asian-mood.mp3')
+let endAudio = new Audio("./audiofiles/End-music.mp3")
+let audio;
 
 let questions = [
     {
     number: 1,
-    question: "What does HTML stand for?",
-    answer: " Hyper Text Markup Language",
+    question: "Vad heter den som blir intervjuad?",
+    answer: " Elnour",
     options: [
-      "Hyper Text Preprocessor",
-      "Hyper Text Markup Language",
-      "Hyper Text Multiple Language",
-      "Hyper Tool Multi Language"
-    ]
+      "Elnuur",
+      "Elnoor",
+      "Gustav II Adolf",
+      "Elnour"
+    ],
+    filepath: "./audiofiles/Question1.mp3"
   },
     {
     number: 2,
-    question: "What does CSS stand for?",
+    question: "Vem är det som heter Anton?",
     answer: " Cascading Style Sheet",
+    answer2: " Vet inte men jag vill också va en kyckling pej",
     options: [
-      "Common Style Sheet",
+      "Vet inte men jag vill också va en kyckling pej",
       "Colorful Style Sheet",
       "Computer Style Sheet",
       "Cascading Style Sheet"
-    ]
+    ],
+    filepath: "./audiofiles/Question2.mp3"
   },
     {
     number: 3,
-    question: "What does PHP stand for?",
-    answer: " Hypertext Preprocessor",
+    question: "Vilket land kommer dansarna ifrån?",
+    answer: " Ghana",
     options: [
-      "Hypertext Preprocessor",
+      "Ghana",
       "Hypertext Programming",
       "Hypertext Preprogramming",
       "Hometext Preprocessor"
-    ]
+    ],
+    filepath:"./audiofiles/Question3.mp3"
   },
     {
     number: 4,
-    question: "What does SQL stand for?",
-    answer: " Structured Query Language",
+    question: "Do you know the way?",
+    answer: " Yes",
+    answer2: " It's right here aint it ⬊",
     options: [
-      "Stylish Question Language",
-      "Stylesheet Query Language",
-      "Statement Question Language",
-      "Structured Query Language"
-    ]
+      "Yes",
+      "No, could you show me?",
+      "Two blocks straight ahead and then a right turn",
+      "It's right here aint it ⬊"
+    ],
+    filepath:"./audiofiles/Question4.mp3"
   },
     {
     number: 5,
-    question: "What does XML stand for?",
-    answer: " eXtensible Markup Language",
+    question: "What is the cowboy's name?",
+    answer: " Jimmy Barnes",
     options: [
       "eXtensible Markup Language",
-      "eXecutable Multiple Language",
+      "Jimmy Barnes",
       "eXTra Multi-Program Language",
       "eXamine Multiple Language"
-    ]
+    ],
+    filepath:"./audiofiles/Question5.mp3"
   },
 ];
 
 startButton.onclick = ()=>{
     infoBox.classList.add("activeInfo");
+    startAudio.addEventListener('ended', function() {
+        this.currentTime = 0;
+        this.play();
+    }, false);
+    startAudio.play();
+    
 }
 
 exitButton.onclick = ()=>{
     infoBox.classList.remove("activeInfo");
+    startAudio.pause();
+    startAudio.currentTime = 0;
 }
 
 continueButton.onclick = ()=>{
@@ -87,10 +105,14 @@ continueButton.onclick = ()=>{
     quizBox.classList.add("activeQuiz");
     showQuestions(0);
     questionCounter(1);
+    startAudio.pause();
+    startAudio.currentTime = 0;
 }
 
 restartQuiz.onclick = ()=>{
     debugger
+    endAudio.pause();
+    endAudio.currentTime = 0;
     quizBox.classList.add("activeQuiz");
     resultBox.classList.remove("activeResult");
     questionCount = 0;
@@ -107,6 +129,7 @@ quitQuiz.onclick = ()=>{
 
 nextButton.onclick = () =>{
     debugger
+    
     if(questionCount < questions.length - 1){
         questionCount++;
         questionNumber++;
@@ -116,23 +139,30 @@ nextButton.onclick = () =>{
     }
     else{
         showResult();
+        endAudio.play();
+
     }
 }
 
 function showQuestions(index) {
+    debugger
     let questionText = document.querySelector(".question-text");
     let questionTag = '<span>' + questions[index].number +  "." + questions[index].question + '</span>';
     let optionTag = '<div class="option" onclick="optionSelected(this)"> <span>' + questions[index].options[0] + '</span></div>' + '<div class="option" onclick="optionSelected(this)"> <span>' + questions[index].options[1] + '</span></div>' + '<div class="option" onclick="optionSelected(this)"> <span>' + questions[index].options[2] + '</span></div>' + '<div class="option" onclick="optionSelected(this)"> <span>' + questions[index].options[3] + '</span></div>';
     questionText.innerHTML = questionTag;
     optionList.innerHTML = optionTag;
+    audio = new Audio (questions[index].filepath);
+    audio.play();
 }
 
 function optionSelected(answer){
+    debugger
     let userAns = answer.textContent;
     let correcAns = questions[questionCount].answer;
+    let correct2 = questions[questionCount].answer2;
     let allOptions = optionList.children.length;
 
-    if(userAns === correcAns){
+    if(userAns === correcAns || userAns === correct2){
         userScore += 1;
         answer.classList.add("correct")
         answer.insertAdjacentHTML("beforeend", tickIconTag);
@@ -156,6 +186,7 @@ function optionSelected(answer){
         optionList.children[i].classList.add("disabled");
     }
     nextButton.classList.add("show");
+    audio.pause();
 }
 
 function showResult(){

@@ -148,7 +148,7 @@ body{
     width: 145px;
 }
 
-.quiz-box header .timer .time-left-txt{
+.quiz-box header{
     font-weight: 400;
     font-size: 17px;
     user-select: none;
