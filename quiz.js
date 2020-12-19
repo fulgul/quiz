@@ -35,13 +35,13 @@ let questions = [
     {
     number: 2,
     question: "Vem är det som heter Anton?",
-    answer: " Cascading Style Sheet",
+    answer: " Den korta killen",
     answer2: " Vet inte men jag vill också va en kyckling pej",
     options: [
       "Vet inte men jag vill också va en kyckling pej",
-      "Colorful Style Sheet",
-      "Computer Style Sheet",
-      "Cascading Style Sheet"
+      "Han med mustasch",
+      "Den korta killen",
+      "Kameramannen"
     ],
     filepath: "./audiofiles/Question2.mp3"
   },
@@ -51,15 +51,15 @@ let questions = [
     answer: " Ghana",
     options: [
       "Ghana",
-      "Hypertext Programming",
-      "Hypertext Preprogramming",
-      "Hometext Preprocessor"
+      "USA",
+      "Sydafrika",
+      "Mongoliet"
     ],
     filepath:"./audiofiles/Question3.mp3"
   },
     {
     number: 4,
-    question: "Do you know the way?",
+    question: "Do you know da way?",
     answer: " Yes",
     answer2: " It's right here aint it ⬊",
     options: [
@@ -75,10 +75,10 @@ let questions = [
     question: "What is the cowboy's name?",
     answer: " Jimmy Barnes",
     options: [
-      "eXtensible Markup Language",
+      "Mark Zuckerberg",
       "Jimmy Barnes",
-      "eXTra Multi-Program Language",
-      "eXamine Multiple Language"
+      "You mean my grandpa?",
+      "Jim Barne"
     ],
     filepath:"./audiofiles/Question5.mp3"
   },
@@ -91,13 +91,15 @@ startButton.onclick = ()=>{
         this.play();
     }, false);
     startAudio.play();
-    
+    startButton.classList.add("hide")
+
 }
 
 exitButton.onclick = ()=>{
     infoBox.classList.remove("activeInfo");
     startAudio.pause();
     startAudio.currentTime = 0;
+    startButton.classList.remove("hide")
 }
 
 continueButton.onclick = ()=>{
@@ -105,14 +107,13 @@ continueButton.onclick = ()=>{
     quizBox.classList.add("activeQuiz");
     showQuestions(0);
     questionCounter(1);
-    startAudio.pause();
-    startAudio.currentTime = 0;
+    fadeOut(startAudio);
+
 }
 
 restartQuiz.onclick = ()=>{
     debugger
-    endAudio.pause();
-    endAudio.currentTime = 0;
+    fadeOut(endAudio);
     quizBox.classList.add("activeQuiz");
     resultBox.classList.remove("activeResult");
     questionCount = 0;
@@ -121,15 +122,19 @@ restartQuiz.onclick = ()=>{
     showQuestions(questionCount);
     questionCounter(questionNumber);
     nextButton.classList.remove("show");
+
 }
 
-quitQuiz.onclick = ()=>{    
+quitQuiz.onclick = ()=>{
     window.location.reload();
 }
 
 nextButton.onclick = () =>{
     debugger
-    
+    if (questionCount === 0){
+        document.querySelector(".quiz-box").classList.remove("quiz-box-first")
+    }
+
     if(questionCount < questions.length - 1){
         questionCount++;
         questionNumber++;
@@ -142,17 +147,30 @@ nextButton.onclick = () =>{
         endAudio.play();
 
     }
+
+
 }
 
 function showQuestions(index) {
     debugger
+    if (index === 0){
+        document.querySelector(".quiz-box").classList.add("quiz-box-first")
+        optionList.classList.add("non-clickable")
+        setTimeout(function() {
+            audio = new Audio (questions[index].filepath);
+            audio.play();
+            optionList.classList.remove("non-clickable")
+          }, 2000);
+    }
+    else{
+        audio = new Audio (questions[index].filepath);
+        audio.play();
+    }
     let questionText = document.querySelector(".question-text");
     let questionTag = '<span>' + questions[index].number +  "." + questions[index].question + '</span>';
     let optionTag = '<div class="option" onclick="optionSelected(this)"> <span>' + questions[index].options[0] + '</span></div>' + '<div class="option" onclick="optionSelected(this)"> <span>' + questions[index].options[1] + '</span></div>' + '<div class="option" onclick="optionSelected(this)"> <span>' + questions[index].options[2] + '</span></div>' + '<div class="option" onclick="optionSelected(this)"> <span>' + questions[index].options[3] + '</span></div>';
     questionText.innerHTML = questionTag;
     optionList.innerHTML = optionTag;
-    audio = new Audio (questions[index].filepath);
-    audio.play();
 }
 
 function optionSelected(answer){
@@ -173,14 +191,6 @@ function optionSelected(answer){
         answer.classList.add("incorrect")
         answer.insertAdjacentHTML("beforeend", crossIconTag);
         console.log("Wrong Answer");
-
-        for(i=0; i < allOptions; i++){
-            if(optionList.children[i].textContent == correcAns){
-                optionList.children[i].classList.add("correct");
-                optionList.children[i].insertAdjacentHTML("beforeend", tickIconTag); 
-            }
-        }
-        console.log("Auto selected correct answer.");
     }
     for(i=0; i < allOptions; i++){
         optionList.children[i].classList.add("disabled");
@@ -194,7 +204,7 @@ function showResult(){
     quizBox.classList.remove("activeQuiz")
     resultBox.classList.add("activeResult")
     let scoreText = resultBox.querySelector(".score-text")
-    if (userScore > 3){ 
+    if (userScore > 3){
         let scoreTag = '<span>and congrats! 🎉, You got <p>'+ userScore +'</p> out of <p>'+ questions.length +'</p></span>';
         scoreText.innerHTML = scoreTag;
     }
@@ -210,5 +220,31 @@ function showResult(){
 
 function questionCounter(index){
     let totalQuestionCountTag = '<span><p>'+ index +'</p> of <p>'+ questions.length +'</p> Questions</span>';
-    bottomQuestionCounter.innerHTML = totalQuestionCountTag; 
+    bottomQuestionCounter.innerHTML = totalQuestionCountTag;
 }
+
+function fadeOut(sound) {
+    debugger
+    if(sound.volume > 0.05) {
+      setTimeout(function() {
+        sound.volume -= 0.05;
+        fadeOut(sound);
+      }, 300);
+    }
+    else if(sound.volume > 0.005) {
+        setTimeout(function() {
+          sound.volume -= 0.005;
+          fadeOut(sound);
+        }, 300);
+      }
+
+    else{
+        sound.volume = 0;
+        sound.pause();
+        sound.currentTime = 0;
+    }
+
+    
+
+
+  }
