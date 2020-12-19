@@ -72,12 +72,12 @@ let questions = [
   },
     {
     number: 5,
-    question: "What is the cowboy's name?",
+    question: "Vad heter mannen i bakgrunden?",
     answer: " Jimmy Barnes",
     options: [
       "Mark Zuckerberg",
       "Jimmy Barnes",
-      "You mean my grandpa?",
+      "Du menar min farfar?",
       "Jim Barne"
     ],
     filepath:"./audiofiles/Question5.mp3"
